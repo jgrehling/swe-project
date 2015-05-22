@@ -1,48 +1,96 @@
 <html ng-app>
 <head>
   <meta charset="utf8" />
-  <title>AngularJS Tutorial</title>
+  <title>Roboter - SWE</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
  
    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
 
-<div id="arrayDrawn">
+<label for="timeout">Timeout</label>
+<input type="number" id="timeout" value="500" />
+<label for="iterations">Iterationen</label>
+<input type="text" id="iterations" value="100" />
+<label for="iterations"></label>
+<select id="orientation">
+	<option value="0">Nord</option>
+	<option value="1">Ost</option>
+	<option value="2">Süd</option>
+	<option value="3">West</option>
+</select>
+Standardfarbe: 
+<label for="defaultcolour_white">Weiß</label>
+<input type="radio" name="defaultcolour" id="defaultcolour_white" value="white" />
+<label for="defaultcolour_black">Schwarz</label>
+<input type="radio" name="defaultcolour" id="defaultcolour_black" value="black" />
+<label for="defaultcolour_random">Random</label>
+<input type="radio" name="defaultcolour" id="defaultcolour_random" value="random" checked="checked" />
+<input type="button" onclick="initialize()" value="Run" />
 
-
-
+<div id="arrowfield">
 </div>
+<div id="arrayDrawn">
+</div>
+
 <script type="text/javascript">
 
 var defaultColour = 0;
 var counter = 1;
 var counter_s = 100;
+var timeout = 500;
+var fieldsVisited = [];
 
-$( document ).ready(function() {
-    
+function initialize() {
+	timeout = $('#timeout').val();
+	counter_s = $('#iterations').val();
+	
+	console.log(counter_s);
 	
 	var area = [];
 	area[0] = [];
 	area[1] = [];
 	area[2] = [];
-	area[0][0] = defaultColour;
-	area[0][1] = defaultColour;
-	area[1][0] = defaultColour;
-	area[1][1] = defaultColour;
-	area[0][2] = defaultColour;
-	area[1][2] = defaultColour;
-	area[1][1] = defaultColour;
-	area[2][0] = defaultColour;
-	area[2][1] = defaultColour;
-	area[2][2] = defaultColour;
+	area[0][0] = getColor();
+	area[0][1] = getColor();
+	area[1][0] = getColor();
+	area[1][1] = getColor();
+	area[0][2] = getColor();
+	area[1][2] = getColor();
+	area[1][1] = getColor();
+	area[2][0] = getColor();
+	area[2][1] = getColor();
+	area[2][2] = getColor();
 
 	// can be between 0 and 3 (0 equals north, 1 equals east, 2 equals south, 3 equals west)
-	var orientation = 2;
-	var position = [1,1]
+	var orientation = $('#orientation').val();
+	var position = [1,1];
 	
 	nextStep(area, position, orientation);
-});
+}
+
+/**
+ *
+ *
+ */
+function getColor() {
+	switch($('input[name=defaultcolour]:checked').val()) {
+			case 'black':
+				return 1;
+				break;
+			case 'white':
+				return 0;
+				break;
+			case 'random':
+				if(Math.random()<.5) {
+					return 1;
+				}else{	
+					return 0;
+				};
+				break;
+	};
+}
+
 
 /**
  * Function changes orientation variable
@@ -68,7 +116,7 @@ function changeOrientation(rotateLeft, orientation) {
 }
 
 /**
- * Inverts the field color in the area array at the given position coordinates.
+ * Inverts the field colour in the area array at the given position coordinates.
  *
  * @returns area array
  */
@@ -109,16 +157,15 @@ function changeOrientation(rotateLeft, orientation) {
 		area[position[0]+1] = [];
 		
 		var length = area[position[0]].length;
-		console.log(length);
 		for (var i = 0; i < length; i++) {
-			area[position[0]+1][i] = defaultColour;
+			area[position[0]+1][i] = getColor();
 		}
 		
 	// we have to add a horizontal line at the top of the field
 	} else if(area[position[0]][position[1]+1] == undefined) {
 				
 		$(area).each(function() {
-			this[position[1]+1] = defaultColour;
+			this[position[1]+1] = getColor();
 		});
 	
 	// we have to add a vertical line at the left side of the field
@@ -127,7 +174,7 @@ function changeOrientation(rotateLeft, orientation) {
 		var length = area[position[0]].length;
 		
 		for (var i = 0; i < length; i++) {
-			tempArray[i] = defaultColour;
+			tempArray[i] = getColor();
 		}
 		area.unshift(tempArray);
 		position[0]++;
@@ -136,7 +183,7 @@ function changeOrientation(rotateLeft, orientation) {
 	} else if(position[1]-1 < 0) { 
 		
 		$(area).each(function() {
-			this.unshift(defaultColour);
+			this.unshift(getColor());
 		});
 		position[1] ++;
 	} 
@@ -144,20 +191,20 @@ function changeOrientation(rotateLeft, orientation) {
 	return [area, position];
  }
  
- function setOrientationBorder(position, orientation) {
+ function setOrientationArrow(orientation) {
  
 	switch(orientation) {
 		case 0:
-			$("#" + position[0] + "_" + position[1]).addClass("border-top");
+			$("#arrowfield").removeClass().addClass("orientation-top");
 			break;
 		case 1:
-			$("#" + position[0] + "_" + position[1]).addClass("border-right");
+			$("#arrowfield").removeClass().addClass("orientation-right");
 			break;
 		case 2:
-			$("#" + position[0] + "_" + position[1]).addClass("border-bottom");
+			$("#arrowfield").removeClass().addClass("orientation-bottom");
 			break;
 		case 3:
-			$("#" + position[0] + "_" + position[1]).addClass("border-left");
+			$("#arrowfield").removeClass().addClass("orientation-left");
 			break;
 	}
  }
@@ -184,37 +231,30 @@ function changeOrientation(rotateLeft, orientation) {
 	$(area).each(function(xIndex) {
 	
 		$(this).each(function(yIndex) {
-			$("#" + xIndex + "_"+ yIndex).html(this);
+			
+			if(this == 0) {
+				$("#" + xIndex + "_"+ yIndex).addClass("white").html();
+			} else {
+				$("#" + xIndex + "_"+ yIndex).addClass("black").html();
+			}
+			
 		});
 	
 	});
 	
 	$("#" + position[0] + "_" + position[1]).addClass('currentPosition');
-	setOrientationBorder(position, orientation);
+	setOrientationArrow(orientation);
 	
  }
  
- function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
-}
-
 /**
  *
  *
  *
  */
 function nextStep(area, position, orientation) {
-	console.log("######Before######");
-	console.log(area);
-	console.log(position);
-	console.log(orientation);
 	// field is black
-	if(area[position[0]][position[1]-1] == 1) {
+	if(area[position[0]][position[1]] == 1) {
 		// rotate 90 degree to the left
 		orientation = changeOrientation(true, orientation);
 	// field is white
@@ -222,22 +262,20 @@ function nextStep(area, position, orientation) {
 		// rotate 90 degree to the right
 		orientation = changeOrientation(false, orientation);
 	}
+
 	// invert colour of the currently focused field
 	area = invertColour(area, position);
 	position = moveFocus(position, orientation);
 	temp = centerFocusInArea(area, position);
 	area = temp[0];
 	position = temp[1];
-	console.log("######After######");
-	console.log(area);
-	console.log(position);
-	console.log(orientation);
-	console.log("#############################################");
+	
 	drawArray(area, position, orientation);
+	
+	// check if counter is exceeded
 	if(counter < counter_s) {
 		counter ++;
-		setTimeout(function() { nextStep(area, position, orientation) }, 1000 );
-		//nextStep(area, position, orientation);
+		setTimeout(function() { nextStep(area, position, orientation) }, timeout );
 	};
 	
 }

@@ -1,19 +1,43 @@
-.border-top {
-	border-top: 1px solid black;
+#arrayDrawn td {
+	width: 15px;
+	height: 15px;
+
 }
 
-.border-right {
-	border-right: 1px solid black;
+.white {
+	background-color: white;
+	color: black;
 }
 
-.border-bottom {
-	border-bottom: 1px solid black;
-}
-
-.border-left {
-	border-left: 1px solid black;
+.black {
+	background-color: black;
+	color: white;
 }
 
 .currentPosition {
 	font-weight: bold;
+	background-color: red;
+}
+
+#arrowfield {
+	height: 50px;
+	width: 50px;
+	background-size: 50px 50px;
+	background-repeat: no-repeat;
+}
+
+.orientation-top {
+	background: url("arrow-top.png");
+}
+
+.orientation-right {
+	background: url("arrow-right.png");
+}
+
+.orientation-bottom {
+	background: url("arrow-bottom.png");
+}
+
+.orientation-left {
+	background: url("arrow-left.png");
 }
