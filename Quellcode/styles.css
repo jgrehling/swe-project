@@ -27,17 +27,17 @@
 }
 
 .orientation-top {
-	background: url("arrow-top.png");
+    transform:rotate(0deg);
 }
 
 .orientation-right {
-	background: url("arrow-right.png");
+    transform:rotate(90deg);
 }
 
 .orientation-bottom {
-	background: url("arrow-bottom.png");
+    transform:rotate(180deg);
 }
 
 .orientation-left {
-	background: url("arrow-left.png");
+    transform:rotate(270deg);
 }
