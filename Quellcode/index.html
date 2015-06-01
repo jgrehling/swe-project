@@ -1,7 +1,7 @@
 <html ng-app>
 <head>
   <meta charset="utf8" />
-  <title>Roboter - SWE</title>
+  <title>Roboter - Projekt Softwareengineering</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -28,24 +28,39 @@ Standardfarbe:
 <input type="radio" name="defaultcolour" id="defaultcolour_random" value="random" checked="checked" />
 <input type="button" onclick="initialize()" value="Run" />
 <br>
-<img src="arrow-top.png" id="arrowfield">
+<img src="arrow-top.png" id="arrowfield"><br/>
+Aktuelle Iteration: <span id="currentIteration"></span>
 <div id="arrayDrawn">
 </div>
 
 <script type="text/javascript">
 
-var defaultColour = 0;
-var counter = 1;
-var counter_s = 100;
-var timeout = 500;
-var fieldsVisited = [];
+var defaultColour;
+var counter;
+var counter_s;
+var timeout;
+var fieldsVisited;
+// cumulated area lengths (x+y)
+var area_lenght;
+var current_iteration;
 
 function initialize() {
+
+	// initialize global vars
+	defaultColour = 0;
+	counter = 1;
+	counter_s = 100;
+	timeout = 500;
+	fieldsVisited = [];
+	// cumulated area lengths (x+y)
+	area_lenght = 0;
+	current_iteration = 1;
+
+	// set user settings to variables
 	timeout = $('#timeout').val();
 	counter_s = $('#iterations').val();
 	
-	console.log(counter_s);
-	
+	// initialize area
 	var area = [];
 	area[0] = [];
 	area[1] = [];
@@ -63,14 +78,15 @@ function initialize() {
 
 	// can be between 0 and 3 (0 equals north, 1 equals east, 2 equals south, 3 equals west)
 	var orientation = $('#orientation').val();
+	// initial position
 	var position = [1,1];
 	
+	// trigger iterations
 	nextStep(area, position, orientation);
 }
 
 /**
- *
- *
+ * Returns a white, black or random color, depending on user configuration
  */
 function getColor() {
 	switch($('input[name=defaultcolour]:checked').val()) {
@@ -129,6 +145,10 @@ function changeOrientation(rotateLeft, orientation) {
 	return area;
  }
  
+ /**
+  *
+  *
+  */
  function moveFocus(position, orientation) {
 
 	switch(orientation) {
@@ -149,6 +169,10 @@ function changeOrientation(rotateLeft, orientation) {
 	return position;
  }
  
+ /**
+  *
+  *
+  */
  function centerFocusInArea(area, position) {
 	// we have to add a vertical line at the right of the field
 	if(area[position[0]+1] == undefined) {
@@ -190,6 +214,10 @@ function changeOrientation(rotateLeft, orientation) {
 	return [area, position];
  }
  
+ /**
+  *
+  *
+  */
  function setOrientationArrow(orientation) {
  
 	switch(orientation) {
@@ -208,28 +236,39 @@ function changeOrientation(rotateLeft, orientation) {
 	}
  }
  
+ /**
+  *
+  *
+  */
  function drawArray(area, position, orientation) {
 	var content = "<table>";
 	var xLength = area.length;
 	var yLength = area[0].length;
 	
-	for(var i=yLength-1; i >= 0; i--) {
-		content += "<tr>";
-		
-		for(var j=0; j < xLength; j++) {
-			content += "<td id='" + j + "_" + i + "'></td>";
+	// if the array has exceeded its borders
+	if((parseInt(xLength) + parseInt(yLength)) > area_lenght) {
+			
+		for(var i=yLength-1; i >= 0; i--) {
+			content += "<tr>";
+			
+			for(var j=0; j < xLength; j++) {
+				content += "<td id='" + j + "_" + i + "'></td>";
+			}
+			
+			content += "</tr>";
 		}
-		
-		content += "</tr>";
-	}
-		
-	content += "</table>";
+			
+		content += "</table>";
 
-	$('#arrayDrawn').html(content);
+		$('#arrayDrawn').html(content);
+		area_lenght = parseInt(xLength) + parseInt(yLength);
+	}
 	
 	$(area).each(function(xIndex) {
 	
 		$(this).each(function(yIndex) {
+			
+			$("#" + xIndex + "_"+ yIndex).removeClass();
 			
 			if(this == 0) {
 				$("#" + xIndex + "_"+ yIndex).addClass("white").html();
@@ -240,10 +279,13 @@ function changeOrientation(rotateLeft, orientation) {
 		});
 	
 	});
-	
+	// remove old current position marker
+	$('#arrayDrawn td.currentPosition').removeClass('currentPosition');
 	$("#" + position[0] + "_" + position[1]).addClass('currentPosition');
-	setOrientationArrow(orientation);
+
+	$('#currentIteration').html(current_iteration);
 	
+	setOrientationArrow(orientation);	
  }
  
 /**
@@ -269,6 +311,7 @@ function nextStep(area, position, orientation) {
 	area = temp[0];
 	position = temp[1];
 	
+	current_iteration ++;
 	// check if counter is exceeded
 	if(counter < counter_s) {
 		counter ++;
