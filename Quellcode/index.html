@@ -26,7 +26,9 @@ Standardfarbe:
 <input type="radio" name="defaultcolour" id="defaultcolour_black" value="black" />
 <label for="defaultcolour_random">Random</label>
 <input type="radio" name="defaultcolour" id="defaultcolour_random" value="random" checked="checked" />
-<input type="button" onclick="initialize()" value="Run" />
+<input type="button" onclick="start()" value="Start" />
+<input type="button" onclick="pause()" value="Pausieren" />
+<input type="button" onclick="resume()" value="Fortsetzen" />
 <br>
 <img src="arrow-top.png" id="arrowfield"><br/>
 Aktuelle Iteration: <span id="currentIteration"></span>
@@ -43,6 +45,8 @@ var fieldsVisited;
 // cumulated area lengths (x+y)
 var area_lenght;
 var current_iteration;
+var paused;
+var savedVarsOnPause;
 
 function initialize() {
 
@@ -55,6 +59,8 @@ function initialize() {
 	// cumulated area lengths (x+y)
 	area_lenght = 0;
 	current_iteration = 1;
+	paused = 0;
+	savedVarsOnPause = [];
 
 	// set user settings to variables
 	timeout = $('#timeout').val();
@@ -288,12 +294,31 @@ function changeOrientation(rotateLeft, orientation) {
 	setOrientationArrow(orientation);	
  }
  
+function pause() {
+	paused = 1;
+}
+ 
+function resume() {
+	if(paused = 1) {
+		paused = 0;
+		nextStep(savedVarsOnPause[0], savedVarsOnPause[1], savedVarsOnPause[2]);
+	}
+}
+
+function start() {
+	paused = 1;
+	setTimeout(function(){ initialize() }, parseInt(timeout) + 100);
+}
+ 
 /**
  *
  *
  *
  */
 function nextStep(area, position, orientation) {
+
+	drawArray(area, position, orientation);
+	
 	// field is black
 	if(area[position[0]][position[1]] == 1) {
 		// rotate 90 degree to the left
@@ -312,13 +337,20 @@ function nextStep(area, position, orientation) {
 	position = temp[1];
 	
 	current_iteration ++;
-	// check if counter is exceeded
-	if(counter < counter_s) {
-		counter ++;
-		setTimeout(function() { nextStep(area, position, orientation) }, timeout );
-        drawArray(area, position, orientation);
-	};
+	// check if program is paused
+	if(paused == 0) {
+		// check if counter is exceeded
+		if(counter < counter_s) {
+			counter ++;
+			setTimeout(function() { nextStep(area, position, orientation) }, timeout );
+		};
 	
+	// save current values
+	} else {
+		savedVarsOnPause[0] = area;
+		savedVarsOnPause[1] = position;
+		savedVarsOnPause[2] = orientation;
+	}
 }
 
 </script>
