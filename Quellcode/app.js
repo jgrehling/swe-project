@@ -14,8 +14,6 @@ function initialize() {
 	// initialize global vars
 	defaultColour = 0;
 	counter = 1;
-	counter_s = 100;
-	timeout = 500;
 	fieldsVisited = [];
 	// cumulated area lengths (x+y)
 	area_lenght = 0;
@@ -68,9 +66,9 @@ function getColor() {
 					return 1;
 				}else{	
 					return 0;
-				};
+				}
 				break;
-	};
+	}
 }
 
 
@@ -198,19 +196,19 @@ function changeOrientation(rotateLeft, orientation) {
   * @params orientation current orientation
   */
  function setOrientationArrow(orientation) {
- 
+    var arrowfield = $("#arrowfield");
 	switch(orientation) {
 		case 0:
-			$("#arrowfield").removeClass().addClass("orientation-top");
+			arrowfield.removeClass().addClass("orientation-top");
 			break;
 		case 1:
-			$("#arrowfield").removeClass().addClass("orientation-right");
+            arrowfield.removeClass().addClass("orientation-right");
 			break;
 		case 2:
-			$("#arrowfield").removeClass().addClass("orientation-bottom");
+            arrowfield.removeClass().addClass("orientation-bottom");
 			break;
 		case 3:
-			$("#arrowfield").removeClass().addClass("orientation-left");
+            arrowfield.removeClass().addClass("orientation-left");
 			break;
 	}
  }
@@ -251,13 +249,14 @@ function changeOrientation(rotateLeft, orientation) {
 	$(area).each(function(xIndex) {
 	
 		$(this).each(function(yIndex) {
-			
-			$("#" + xIndex + "_"+ yIndex).removeClass();
+
+            var field = $("#" + xIndex + "_"+ yIndex);
+			field.removeClass();
 			
 			if(this == 0) {
-				$("#" + xIndex + "_"+ yIndex).addClass("white").html();
+                field.addClass("white").html();
 			} else {
-				$("#" + xIndex + "_"+ yIndex).addClass("black").html();
+                field.addClass("black").html();
 			}
 			
 		});
@@ -265,37 +264,47 @@ function changeOrientation(rotateLeft, orientation) {
 	});
 	// remove old current position marker
 	$('#arrayDrawn td.currentPosition').removeClass('currentPosition');
-	$("#" + position[0] + "_" + position[1]).addClass('currentPosition');
+	$("#" + position[0] + "_" + position[1]).removeClass().addClass('currentPosition');
 
 	$('#currentIteration').html(current_iteration);
 	
 	setOrientationArrow(orientation);	
  }
- 
+
  /**
-  * Function pauses the current execution
+  * Function resumes/pauses the current execution
   */
 function pause() {
-	paused = 1;
-}
- 
- /**
-  * Function resumes the current execution
-  */
-function resume() {
-	if(paused = 1) {
-		paused = 0;
+	if(paused == 1) {
+        setPause(0);
 		nextStep(savedVarsOnPause[0], savedVarsOnPause[1], savedVarsOnPause[2]);
-	}
+	} else {
+        setPause(1);
+    }
 }
 
+
+function setPause(val){
+    if(val == 1) {
+        paused = 1;
+        $('#btn-pause').html('<i class="mdi-av-play-arrow left"></i>Fortsetzen');
+    }
+    if (val ==0) {
+        paused = 0;
+        $('#btn-pause').html('<i class="mdi-av-pause left"></i>Pausieren');
+    }
+}
 /**
  * Function triggers initialisation - but makes previously sure that no execution is still running
  */
 function start() {
+    setPause(0);
 	paused = 1;
+    $('#btn-pause').removeClass('disabled');
+    $('#infos').removeClass('hide');
 	setTimeout(function(){ initialize() }, parseInt(timeout) + 100);
 }
+
  
 /**
  * Main Function that handles the single steps.
@@ -322,7 +331,7 @@ function nextStep(area, position, orientation) {
 	// invert colour of the currently focused field
 	area = invertColour(area, position);
 	position = moveFocus(position, orientation);
-	temp = centerFocusInArea(area, position);
+	var temp = centerFocusInArea(area, position);
 	area = temp[0];
 	position = temp[1];
 	
@@ -334,7 +343,7 @@ function nextStep(area, position, orientation) {
 			counter ++;
 			// Re-Call function after given timeout
 			setTimeout(function() { nextStep(area, position, orientation) }, timeout );
-		};
+		}
 	
 	// save current values
 	} else {

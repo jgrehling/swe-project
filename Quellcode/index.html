@@ -1,39 +1,112 @@
-<html ng-app>
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf8" />
-  <title>Roboter - Projekt Softwareengineering</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="utf8" />
+    <title>Roboter - Projekt Softwareengineering</title>
+    <link rel="stylesheet" href="materialize/css/materialize.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<script src="jquery-1.11.0.min.js"></script>
+<script src="materialize/js/materialize.min.js"></script>
 
-	<script src="jquery-1.11.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+</script>
 
-	<label for="timeout">Timeout</label>
-	<input type="number" id="timeout" value="500" />
-	<label for="iterations">Iterationen</label>
-	<input type="text" id="iterations" value="100" />
-	<label for="iterations"></label>
-	<select id="orientation">
-		<option value="0">Nord</option>
-		<option value="1">Ost</option>
-		<option value="2">Süd</option>
-		<option value="3">West</option>
-	</select>
-	Standardfarbe: 
-	<label for="defaultcolour_white">Weiß</label>
-	<input type="radio" name="defaultcolour" id="defaultcolour_white" value="white" />
-	<label for="defaultcolour_black">Schwarz</label>
-	<input type="radio" name="defaultcolour" id="defaultcolour_black" value="black" />
-	<label for="defaultcolour_random">Random</label>
-	<input type="radio" name="defaultcolour" id="defaultcolour_random" value="random" checked="checked" />
-	<input type="button" onclick="start()" value="Start" />
-	<input type="button" onclick="pause()" value="Pausieren" />
-	<input type="button" onclick="resume()" value="Fortsetzen" />
-	<br>
-	<img src="arrow-top.png" id="arrowfield"><br/>
-	Aktuelle Iteration: <span id="currentIteration"></span>
-	<div id="arrayDrawn">
-	</div>
+<nav>
+    <div class="nav-wrapper blue">
+        <div class="container ">
+            <a href="#" class="brand-logo">Ein Roboter</a>
+        </div>
+    </div>
+</nav>
+
+
+<div class="row z-depth-1">
+    <div class="col s12">
+        <ul class="tabs">
+            <li class="tab col s3"><a class="active blue-text" href="#programm">Programm</a></li>
+            <li class="tab col s3"><a class="blue-text" href="#erklaerung">Erklärung</a></li>
+        </ul>
+    </div>
+</div>
+
+<div id="programm">
+    <div class="container">
+        <div class="row">
+            <div class="input-field col s6 l2">
+                <input type="number" id="timeout" value="10" min="0" class="validate">
+                <label for="timeout">Timeout in ms</label>
+            </div>
+
+            <div class="input-field col s6 l2">
+                <input type="number" id="iterations" value="10500" min="0" class="validate">
+                <label for="iterations">Iterationen</label>
+            </div>
+
+            <div class="input-field col s6 l2">
+                <select id="orientation">
+                    <option value="0">Nord</option>
+                    <option value="1">Ost</option>
+                    <option value="2">Süd</option>
+                    <option value="3">West</option>
+                </select>
+                <label for="orientation">Ausrichtung</label>
+            </div>
+
+            <div class="input-field col s6 l2">
+                Standardfarbe:<br>
+                <input type="radio" name="defaultcolour" id="defaultcolour_white" class="with-gap" value="white" checked>
+                <label for="defaultcolour_white">Weiß</label><br>
+
+                <input type="radio" name="defaultcolour" id="defaultcolour_black" class="with-gap" value="black">
+                <label for="defaultcolour_black">Schwarz</label><br>
+
+                <input type="radio" name="defaultcolour" id="defaultcolour_random" class="with-gap" value="random">
+                <label for="defaultcolour_random">Random</label>
+            </div>
+
+            <div class="col center s12 l4">
+                <p><a class="waves-effect waves-light btn blue" onclick="start()"><i class="mdi-av-play-arrow left"></i>Start</a></p>
+
+                <p><a id="btn-pause" class="waves-effect waves-light btn blue disabled" onclick="pause()"><i class="mdi-av-pause left"></i>Pausieren</a></p>
+            </div>
+
+        </div>
+
+        <br>
+
+        <div id="infos" class="row hide">
+            <div class="col l6 s6 valign-wrapper center">
+                Aktuelle Ausrichtung: <img src="arrow-top.png" id="arrowfield">
+            </div>
+
+            <div class="col l6 s6 valign-wrapper">
+                <p>Aktuelle Iteration: <span id="currentIteration"></span>
+            </div>
+        </div>
+
+
+        <div id="arrayDrawn">
+        </div>
+    </div>
+</div>
+
+<div id="erklaerung">
+    <div class="container">
+    <p>Gegeben ist eine, theoretisch unendlich große, zweidimensionale, Ebene, welches in quadratischen Felder eingeteilt ist. Auf einem Feld steht ein Roboter. Dieser hat eine Bewegungsrichtung. Das Verhalten des Systems ist durch folgende beiden Regeln beschrieben:</p>
+
+    <p>- Falls das Feld unter dem Fokus weiß ist, so ändert dieser die Bewegungsrichtung im 90° nach rechts, invertiert die Feldfarbe und bewegt sich ein Feld in Richtung der (neuen) Bewegungsrichtung.</p>
+
+    <p>- Falls das Feld unter dem Fokus schwarz ist, so ändert dieser die Bewegungsrichtung im 90° nach links, invertiert die Feldfarbe und bewegt sich wiederum ein Feld in Richtung der (neuen) Bewegungsrichtung.</p>
+
+    <p>Entwerfen und implementieren Sie einen Algorithmus, der das Verhalten des Roboters simuliert und untersuchen Sie das Verhalten dieses dynamischen Systems!</p>
+    </div>
+</div>
+
 
 	<script src="app.js"></script>
 </body>
