@@ -8,6 +8,7 @@ var area_lenght;
 var current_iteration;
 var paused;
 var savedVarsOnPause;
+var field_history;
 
 function initialize() {
 
@@ -284,6 +285,10 @@ function pause() {
 }
 
 
+/**
+ * Sets pause and the pause button the given value
+ * @param val
+ */
 function setPause(val){
     if(val == 1) {
         paused = 1;
@@ -317,6 +322,7 @@ function start() {
 function nextStep(area, position, orientation) {
 
 	drawArray(area, position, orientation);
+    saveArray(area);
 	
 	// field is black
 	if(area[position[0]][position[1]] == 1) {
@@ -351,4 +357,9 @@ function nextStep(area, position, orientation) {
 		savedVarsOnPause[1] = position;
 		savedVarsOnPause[2] = orientation;
 	}
+}
+
+function saveArea(area){
+
+
 }
