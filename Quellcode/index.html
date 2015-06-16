@@ -5,16 +5,24 @@
     <title>Roboter - Projekt Softwareengineering</title>
     <link rel="stylesheet" href="materialize/css/materialize.css">
     <link rel="stylesheet" href="styles.css">
+
+
 </head>
 <body>
 <script src="jquery-1.11.0.min.js"></script>
 <script src="materialize/js/materialize.min.js"></script>
-
+<script src="app.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script>
     $(document).ready(function() {
         $('select').material_select();
+
     });
+
+    google.load("visualization", "1", {packages:["corechart", 'controls']});
+
 </script>
+
 
 <nav>
     <div class="nav-wrapper blue">
@@ -97,8 +105,25 @@
 </div>
 
 <div id="statistik">
+    <div class="container">
+
+        <h5>Schwarz - Weiß Verhältnis</h5>  <p><a class="waves-effect waves-light btn blue" onclick="drawSWChart()"><i class="mdi-navigation-refresh left"></i>Aktualisieren</a></p>
+        <div id="dashboard_div_sw">
+            <!--Divs that will hold each control and chart-->
+            <div id="filter_div_sw"></div>
+            <div id="chart_div_sw"></div>
+        </div>
 
 
+
+
+        <h5>X - Y Verhältnis</h5>  <p><a class="waves-effect waves-light btn blue" onclick="drawXYChart()"><i class="mdi-navigation-refresh left"></i>Aktualisieren</a></p>
+        <div id="dashboard_div_xy">
+            <!--Divs that will hold each control and chart-->
+            <div id="filter_div_xy"></div>
+            <div id="chart_div_xy"></div>
+        </div>
+    </div>
 </div>
 
 <div id="erklaerung">
@@ -114,6 +139,6 @@
 </div>
 
 
-	<script src="app.js"></script>
+
 </body>
 </html>

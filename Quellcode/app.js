@@ -21,6 +21,7 @@ function initialize() {
 	current_iteration = 1;
 	paused = 0;
 	savedVarsOnPause = [];
+    field_history = [[],[],[]];
 
 	// set user settings to variables
 	timeout = $('#timeout').val();
@@ -322,7 +323,7 @@ function start() {
 function nextStep(area, position, orientation) {
 
 	drawArray(area, position, orientation);
-    saveArray(area);
+    saveArea(area);
 	
 	// field is black
 	if(area[position[0]][position[1]] == 1) {
@@ -360,6 +361,103 @@ function nextStep(area, position, orientation) {
 }
 
 function saveArea(area){
+    var stat = new Array();
+    var black = 0;
+    var white = 0;
+
+    $(area).each(function(xIndex) {
+
+        $(this).each(function(yIndex) {
+
+            var field = $("#" + xIndex + "_"+ yIndex);
+
+            if(this == 0) {
+                white++;
+            } else {
+                black++;
+            }
+
+        });
+
+    });
+
+    stat['black'] = black;
+    stat['white'] = white;
+    stat['xLength'] = area[0].length;
+    stat['yLength'] = area.length;
+
+            field_history.push( stat );
+}
 
 
+function drawSWChart() {
+    var statVisual = new Array();
+    statVisual.push(['Iterationen','Schwarz','Weiß', 'Gesamt'])
+
+    for(var i=3; i < field_history.length; i++){
+        var hist = field_history[i];
+        statVisual.push([i, hist['black'], hist['white'], (hist['black'] + hist['white'])])
+    }
+
+    var data = google.visualization.arrayToDataTable(statVisual);
+
+    var dashboard = new google.visualization.Dashboard(
+        document.getElementById('dashboard_div_sw'));
+
+    var iterationRangeSlider = new google.visualization.ControlWrapper({
+        'controlType': 'NumberRangeFilter',
+        'containerId': 'filter_div_sw',
+        'options': {
+            'filterColumnLabel': 'Iterationen'
+        }
+    });
+
+    var lineChart = new google.visualization.ChartWrapper({
+        'chartType': 'LineChart',
+        'containerId': 'chart_div_sw',
+        'options': {
+            'height': 500,
+            'pieSliceText': 'value',
+            'legend': 'right'
+        }
+    });
+
+    dashboard.bind(iterationRangeSlider, lineChart);
+    dashboard.draw(data);
+}
+
+function drawXYChart() {
+    var statVisual = new Array();
+    statVisual.push(['Iterationen','X Länge','Y Länge'])
+
+    for(var i=3; i < field_history.length; i++){
+        var hist = field_history[i];
+        statVisual.push([i, hist['xLength'], hist['yLength']])
+    }
+
+    var data = google.visualization.arrayToDataTable(statVisual);
+
+    var dashboard = new google.visualization.Dashboard(
+        document.getElementById('dashboard_div_xy'));
+
+    var iterationRangeSlider = new google.visualization.ControlWrapper({
+        'controlType': 'NumberRangeFilter',
+        'containerId': 'filter_div_xy',
+        'options': {
+            'filterColumnLabel': 'Iterationen'
+        }
+    });
+
+    var lineChart = new google.visualization.ChartWrapper({
+        'chartType': 'LineChart',
+        'containerId': 'chart_div_xy',
+        'options': {
+            'height': 500,
+            'pieSliceText': 'value',
+            'legend': 'right'
+        }
+    });
+
+    dashboard.bind(iterationRangeSlider, lineChart);
+    dashboard.draw(data);
 }
