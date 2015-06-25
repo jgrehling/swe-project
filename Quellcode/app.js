@@ -360,6 +360,11 @@ function nextStep(area, position, orientation) {
 	}
 }
 
+/**
+ * Saves the actual area parameters for the statistics
+ *
+ * @params area current area
+ */
 function saveArea(area){
     var stat = new Array();
     var black = 0;
@@ -386,15 +391,17 @@ function saveArea(area){
     stat['xLength'] = area[0].length;
     stat['yLength'] = area.length;
 
-            field_history.push( stat );
+    field_history.push( stat );
 }
 
-
+/**
+ * draws the black - white chart
+ */
 function drawSWChart() {
     var statVisual = new Array();
     statVisual.push(['Iterationen','Schwarz','Weiß', 'Gesamt'])
 
-    for(var i=3; i < field_history.length; i++){
+    for(var i=0; i < field_history.length; i++){
         var hist = field_history[i];
         statVisual.push([i, hist['black'], hist['white'], (hist['black'] + hist['white'])])
     }
@@ -426,11 +433,14 @@ function drawSWChart() {
     dashboard.draw(data);
 }
 
+/**
+ * draws the x-length - y-length chart
+ */
 function drawXYChart() {
     var statVisual = new Array();
     statVisual.push(['Iterationen','X Länge','Y Länge'])
 
-    for(var i=3; i < field_history.length; i++){
+    for(var i=0; i < field_history.length; i++){
         var hist = field_history[i];
         statVisual.push([i, hist['xLength'], hist['yLength']])
     }
